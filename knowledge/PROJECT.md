@@ -7,7 +7,8 @@ Public at github.com/the-rusty-shackleford/minecraft-azimuth.
 and fade in as you get closer like the old bar (villages and other points of interest should
 not follow this, they should stay the same)." The far dot of D-0003 read as the player being
 gone. Players are framed heads at any distance again, fading by D-0001's curve to the floor
-and back; `Fade.far` and the far sprite are gone; places unchanged (D-0005).
+and back; `Fade.far` and the far sprite are gone; places unchanged (D-0005). Released as tag
+v1.0.2 and deployed as pack 1.62.2 at 20:51 UTC on Rusty's "Go, 2 min warning".
 
 1.0.1 (the evening 1.0.0 went live): Rusty, in play: "The bar is way too low. I only want it
 lowered if a chunky is running, and one is not running right now." No boss bar was visible.
