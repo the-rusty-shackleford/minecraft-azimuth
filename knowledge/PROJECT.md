@@ -1,7 +1,17 @@
 # Azimuth
 
-Version 1.0.0, built 2026-09-24, unreleased. Minecraft 1.21.1, NeoForge 21.1.248, Java 21, both
-sides. Public at github.com/the-rusty-shackleford/minecraft-azimuth.
+Version 1.0.1, built 2026-09-24. Minecraft 1.21.1, NeoForge 21.1.248, Java 21, both sides.
+Public at github.com/the-rusty-shackleford/minecraft-azimuth.
+
+1.0.1 (the evening 1.0.0 went live): Rusty, in play: "The bar is way too low. I only want it
+lowered if a chunky is running, and one is not running right now." No boss bar was visible.
+Cause, pinned on the box: a warden 117 blocks below them was within tracking range, Block
+Factory's Bosses gives every tracked warden a boss event and cancels vanilla's drawing of it at
+the lowest priority, and Azimuth's listener at normal priority had already counted it. The bar
+now sits below only the bars vanilla actually draws: the listener runs last, receives cancelled
+events and ignores them (D-0004). The booth's stand-in for such a mod is registered at mod
+construction at LOWEST like the real one, and the new check failed on 1.0.0's registration
+before passing on the fix.
 
 Rusty on 2026-09-24, after asking for atlas icons on the pack's Locator Bar and hearing what that
 mod is inside: "create our own version of the locator bar (call it Azimuth) that clones the same

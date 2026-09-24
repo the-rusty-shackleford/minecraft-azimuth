@@ -47,8 +47,10 @@ public final class AzimuthHud {
     private static int bossBarsBottom, lastBossBarsBottom, lastTop;
     private AzimuthHud() {}
 
-    /** effects: remembers how low the boss bars reach this frame. */
+    /** effects: remembers how low the boss bars vanilla draws reach this frame; a bar another
+     * mod has cancelled is not drawn there and does not count. */
     public static void onBossBar(CustomizeGuiOverlayEvent.BossEventProgress event) {
+        if (event.isCanceled()) return;
         bossBarsBottom = Math.max(bossBarsBottom, event.getY() + event.getIncrement());
     }
     /** effects: how low the boss bars reached in the last frame drawn, 0 when none showed. */

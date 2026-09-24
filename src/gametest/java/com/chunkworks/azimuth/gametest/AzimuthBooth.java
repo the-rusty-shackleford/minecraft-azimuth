@@ -35,8 +35,8 @@ import java.util.function.Consumer;
  * to the south-east (a framed head), a third far to the south-west (a far dot) and a fourth
  * behind (a chevron), a booth provider's places around them (a bell ahead within range, a
  * campfire at the edge of range fading in, a chest behind as a chevron at the bar's end, a
- * pickaxe out of range) and a lodestone compass in the inventory; then a boss bar, then dots
- * instead of heads. Photographed each time. Screenshots need a human eye; this fixture never
+ * pickaxe out of range) and a lodestone compass in the inventory; then a boss bar, then the same
+ * boss bar hidden by another mod, then dots instead of heads. Photographed each time. Screenshots need a human eye; this fixture never
  * ships. */
 @EventBusSubscriber(modid = "azimuth_gametest", value = Dist.CLIENT)
 public final class AzimuthBooth {
@@ -104,11 +104,19 @@ public final class AzimuthBooth {
                 case 140 -> {
                     check(AzimuthHud.lastBossBarsBottom() > 0 && AzimuthHud.lastTop() >= AzimuthHud.lastBossBarsBottom() + 3, "the bar moved below the boss bar: top " + AzimuthHud.lastTop() + " boss bottom " + AzimuthHud.lastBossBarsBottom());
                     photo(mc, "01-below-boss-bar");
+                    // Another mod hides the boss bar (Block Factory's Bosses does this for every
+                    // tracked warden): the bar must come back up while the boss event still exists.
+                    BossBarHider.hiding = true;
+                }
+                case 160 -> {
+                    check(AzimuthHud.lastBossBarsBottom() == 0 && AzimuthHud.lastTop() == 4, "a boss bar another mod hides does not push the bar down: top " + AzimuthHud.lastTop() + " boss bottom " + AzimuthHud.lastBossBarsBottom());
+                    photo(mc, "02-boss-bar-hidden-by-another-mod");
+                    BossBarHider.hiding = false;
                     server(mc, p -> p.server.getCommands().performPrefixedCommand(p.server.createCommandSourceStack().withSuppressedOutput(), "bossbar remove azimuth:booth"));
                 }
-                case 160 -> { AzimuthConfig.HEADS.set(false); }
-                case 170 -> { check(AzimuthHud.lastTop() == 4, "the bar is back at the top"); photo(mc, "02-dots"); AzimuthConfig.HEADS.set(true); }
-                case 185 -> { LOG.info("azimuth booth: COMPLETE"); mc.stop(); }
+                case 175 -> { AzimuthConfig.HEADS.set(false); }
+                case 185 -> { check(AzimuthHud.lastTop() == 4, "the bar is at the top with the boss bar gone"); photo(mc, "03-dots"); AzimuthConfig.HEADS.set(true); }
+                case 200 -> { LOG.info("azimuth booth: COMPLETE"); mc.stop(); }
             }
         } catch (Throwable failure) { LOG.error("azimuth booth: FAIL", failure); mc.stop(); }
     }

@@ -24,7 +24,9 @@ the **AzimuthLocation protocol**. Both sides: the server gathers, the client dra
   the bar, in the colour of the nearest thing hidden that way, so nothing is lost behind you.
 - A notch at the centre marks your own heading.
 - When a boss bar is showing (a raid, the dragon, Chunky's pregeneration progress), the bar moves
-  down below it and comes back up when it is gone.
+  down below it and comes back up when it is gone. Only bars the game itself draws count: a bar
+  another mod hides or restyles (Block Factory's Bosses does this for every warden you are near,
+  Mowzie's Mobs for its bosses) leaves the bar at the top.
 
 The bar is a HUD layer drawn after the boss overlay; nothing is drawn while the HUD is hidden (F1).
 Its pixel art is the mod's own, under `assets/azimuth/textures/gui/sprites/`, drawn by
@@ -86,6 +88,9 @@ Azimuth apart and load it only when `ModList.get().isLoaded("azimuth")`.
 
 - No bar: `bar.enabled`, F1, or the server has no Azimuth (the channel is optional, so a client
   joins either way and simply sees nothing).
+- The bar sits low under empty sky: a boss bar the game draws pushes it down; since 1.0.1 a bar
+  another mod cancels does not. A mod that cancels after Azimuth has counted (one listening at
+  LOWEST priority and registered later) would still push it down.
 - A player missing: they are crouching, in spectator, invisible, wearing a pumpkin or a skull, in
   another dimension, or beyond the 16 nearest. Heads that show as Steve or Alex have no skin
   loaded yet.
@@ -102,14 +107,17 @@ runs the real-server GameTests (the players payload's rules and cap; providers a
 capped and isolated; the compass and death providers over a real inventory).
 `./gradlew runPhotoBooth` opens a client on the booth world for a visual check of the bar with a
 second player near (a framed head), one far (a dot) and one behind (a chevron), a provider's
-places, a lodestone compass, a boss bar and the dots style.
+places, a lodestone compass, a boss bar, the same boss bar hidden by another mod, and the dots
+style.
 `./gradlew publishToMavenLocal` shares the jar with mods that compile against the protocol.
 `./gradlew build` produces `build/libs/azimuth-<version>.jar`.
 
 ## Status
 
-**1.0.0**: first release: players, directions, coordinates, compass and death points, the
-protocol, boss-bar avoidance, in the mod's own pixel art. Download from
-[GitHub Releases](https://github.com/the-rusty-shackleford/minecraft-azimuth/releases).
+**1.0.1**: the bar sits below only the boss bars the game itself draws; 1.0.0 also moved down
+for bars other mods hide, such as the one Block Factory's Bosses attaches to every tracked
+warden, and sat low under empty sky. **1.0.0**: first release: players, directions, coordinates,
+compass and death points, the protocol, boss-bar avoidance, in the mod's own pixel art. Download
+from [GitHub Releases](https://github.com/the-rusty-shackleford/minecraft-azimuth/releases).
 Verified: 22 JUnit tests, 3 real-server GameTests and the photo booth; see
 [release verification](devtools/verification/).

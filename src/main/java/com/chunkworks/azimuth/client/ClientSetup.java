@@ -4,6 +4,7 @@ package com.chunkworks.azimuth.client;
 import com.chunkworks.azimuth.Azimuth;
 import com.chunkworks.azimuth.Bearings;
 import net.neoforged.api.distmarker.Dist;
+import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
@@ -20,7 +21,11 @@ public final class ClientSetup {
     private ClientSetup() {}
     @SubscribeEvent public static void layers(RegisterGuiLayersEvent event) { event.registerAbove(VanillaGuiLayers.BOSS_OVERLAY, Azimuth.id("bar"), AzimuthHud::draw); }
     @SubscribeEvent public static void setup(FMLClientSetupEvent event) {
-        NeoForge.EVENT_BUS.addListener((CustomizeGuiOverlayEvent.BossEventProgress e) -> AzimuthHud.onBossBar(e));
+        // Last, and told about cancelled bars too, so the bar sits below what vanilla actually
+        // draws: a mod that hides or restyles a boss bar cancels this event (Block Factory's
+        // Bosses does, at LOWEST, for every warden a player tracks), and counting it pushed the
+        // bar down under nothing (D-0004).
+        NeoForge.EVENT_BUS.addListener(EventPriority.LOWEST, true, CustomizeGuiOverlayEvent.BossEventProgress.class, AzimuthHud::onBossBar);
         NeoForge.EVENT_BUS.addListener((ClientPlayerNetworkEvent.LoggingOut e) -> Bearings.clear());
     }
 }
