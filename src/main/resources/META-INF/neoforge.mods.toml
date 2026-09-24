@@ -1,0 +1,21 @@
+modLoader="javafml"
+loaderVersion="[4,)"
+license="AGPL-3.0-or-later"
+[[mods]]
+modId="azimuth"
+version="${version}"
+displayName="Azimuth"
+authors="Rusty Shackleford and nfx"
+description='''A bar across the top of the screen that shows which way the other players are, and how far, and any place a mod points it at: a lodestone compass, your last death, or what your atlas knows. Other mods contribute places through the AzimuthLocation protocol.'''
+[[dependencies.azimuth]]
+modId="neoforge"
+type="required"
+versionRange="[21.1.248,)"
+ordering="NONE"
+side="BOTH"
+[[dependencies.azimuth]]
+modId="minecraft"
+type="required"
+versionRange="[1.21.1]"
+ordering="NONE"
+side="BOTH"

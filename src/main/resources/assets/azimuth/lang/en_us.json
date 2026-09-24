@@ -1,0 +1,23 @@
+{
+  "azimuth.bearing.lodestone": "Lodestone",
+  "azimuth.bearing.death": "Where you died",
+  "azimuth.configuration.players": "Players",
+  "azimuth.configuration.cadence_ticks": "Update Every (ticks)",
+  "azimuth.configuration.max": "Most Shown",
+  "azimuth.configuration.fade_start": "Fade From (blocks)",
+  "azimuth.configuration.fade_to_min": "Faded By (blocks)",
+  "azimuth.configuration.min_alpha": "Faded Opacity",
+  "azimuth.configuration.locations": "Places",
+  "azimuth.configuration.range": "Shown Within (blocks)",
+  "azimuth.configuration.fade": "Fade In Over (blocks)",
+  "azimuth.configuration.bar": "Bar",
+  "azimuth.configuration.enabled": "Show The Bar",
+  "azimuth.configuration.scale": "Scale",
+  "azimuth.configuration.view_angle": "View Angle (degrees)",
+  "azimuth.configuration.offset_x": "Horizontal Offset",
+  "azimuth.configuration.offset_y": "Vertical Offset",
+  "azimuth.configuration.show_directions": "Show N E S W",
+  "azimuth.configuration.show_coordinates": "Show Coordinates",
+  "azimuth.configuration.heads": "Player Heads (off: dots)",
+  "azimuth.configuration.below_boss_bars": "Sit Below Boss Bars"
+}

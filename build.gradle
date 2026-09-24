@@ -1,0 +1,122 @@
+plugins {
+    id 'java-library'
+    id 'maven-publish'
+    id 'net.neoforged.moddev' version '2.0.144'
+}
+version = mod_version
+group = 'com.chunkworks.azimuth'
+base { archivesName = 'azimuth' }
+java.toolchain.languageVersion = JavaLanguageVersion.of(21)
+repositories { mavenCentral() }
+sourceSets { domain; gametest }
+def gameTestLog = file('run/logs/latest.log')
+def boothLog = file('run/booth/logs/latest.log')
+def boothDirectory = file('run/booth')
+def boothShots = file('run/booth/screenshots')
+var resetWorld = tasks.register('resetGameTestWorld', Delete) { delete 'run/world' }
+// Paths are resolved against the project here, not inside the action: the daemon's working
+// directory may be another repo's, and the configuration cache forbids the action from asking.
+def serverProperties = file('run/server.properties')
+def configDirectories = [file('run/config'), file('run/booth/config')]
+var verification = tasks.register('prepareVerification') {
+    doLast {
+        if (!serverProperties.exists()) { serverProperties.parentFile.mkdirs(); serverProperties.text = 'max-tick-time=0\n' }
+        configDirectories.each { config ->
+            config.mkdirs()
+            new File(config, 'fml.toml').text = 'disableConfigWatcher=true\nearlyWindowControl=false\n'
+        }
+    }
+}
+var structures = tasks.register('copyGameTestStructures', Copy) {
+    from 'devtools/gameteststructures'
+    into 'run/gameteststructures'
+}
+// The booth quick-plays into a copy of the gametest server's world; a stale copy would replay the
+// last run's state, so the copy is never up to date.
+var boothWorld = tasks.register('prepareBoothWorld', Sync) {
+    outputs.upToDateWhen { false }
+    doFirst { boothShots.deleteDir() }
+    from 'run/world'
+    into 'run/booth/saves/booth'
+    exclude 'session.lock'
+    doLast {
+        boothDirectory.mkdirs()
+        new File(boothDirectory, 'options.txt').text = 'onboardAccessibility:false\nnarrator:0\nsoundCategory_master:0.0\npauseOnLostFocus:false\nrenderDistance:6\nsimulationDistance:5\nmaxFps:120\nguiScale:2\ntutorialStep:none\n'
+    }
+}
+neoForge {
+    version = '21.1.248'
+    parchment { minecraftVersion = '1.21.1'; mappingsVersion = '2024.11.17' }
+    runs {
+        client { client() }
+        server { server(); programArgument '--nogui' }
+        gameTestServer {
+            type = 'gameTestServer'
+            sourceSet = sourceSets.gametest
+            systemProperty 'neoforge.enabledGameTestNamespaces', 'azimuth'
+            taskBefore structures
+            taskBefore resetWorld
+            taskBefore verification
+        }
+        photoBooth {
+            client()
+            sourceSet = sourceSets.gametest
+            gameDirectory = file('run/booth')
+            systemProperty 'azimuth.booth', 'true'
+            programArguments.addAll('--quickPlaySingleplayer', 'booth', '--width', '1280', '--height', '720')
+            taskBefore boothWorld
+            taskBefore verification
+        }
+        configureEach { logLevel = org.slf4j.event.Level.INFO }
+    }
+    mods {
+        azimuth { sourceSet(sourceSets.domain); sourceSet(sourceSets.main) }
+        azimuth_gametest { sourceSet(sourceSets.gametest) }
+    }
+    addModdingDependenciesTo(sourceSets.gametest)
+}
+neoForge.runs.matching { !(it.name in ['gameTestServer', 'photoBooth']) }.configureEach {
+    loadedMods = neoForge.mods.matching { it.name != 'azimuth_gametest' }
+}
+dependencies {
+    implementation sourceSets.domain.output
+    gametestImplementation sourceSets.main.output
+    gametestImplementation sourceSets.domain.output
+    testImplementation sourceSets.domain.output
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.9.2'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher:1.9.2'
+}
+tasks.named('test', Test) { useJUnitPlatform() }
+// The shipped jar is main + domain; the api package other mods compile against lives in domain.
+jar { from sourceSets.domain.output }
+// Consumers (Magical Map) compile against this artifact from mavenLocal:
+// `./gradlew publishToMavenLocal`, as Ranged Weapons is shared with Armed Pillagers.
+publishing {
+    publications { mavenJava(MavenPublication) { from components.java } }
+}
+def releaseVersion = version.toString()
+tasks.named('processResources') {
+    inputs.property 'version', releaseVersion
+    filesMatching('META-INF/neoforge.mods.toml') { expand version: releaseVersion }
+}
+tasks.withType(JavaCompile).configureEach { options.encoding = 'UTF-8' }
+tasks.named('runGameTestServer') { task ->
+    doLast {
+        def log = gameTestLog.text
+        def passed = log =~ /All (\d+) required tests passed/
+        if (!passed.find() || log.contains('Mod loading has failed')) throw new GradleException('GameTests failed; see run/logs/latest.log')
+        task.logger.lifecycle('GameTests: ' + passed.group(1) + ' passed')
+    }
+}
+tasks.named('runPhotoBooth') {
+    mustRunAfter 'runGameTestServer'
+    doLast {
+        def log = boothLog.text
+        if (!log.contains('azimuth booth: COMPLETE') || log.contains('azimuth booth: FAIL')) throw new GradleException('Azimuth booth failed')
+    }
+}
+tasks.named('prepareBoothWorld') { mustRunAfter 'runGameTestServer' }
+tasks.named('check') {
+    if (!project.hasProperty('skipGameTests')) dependsOn 'runGameTestServer'
+    if (!project.hasProperty('skipBooth')) dependsOn 'runPhotoBooth'
+}
