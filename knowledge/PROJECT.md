@@ -68,6 +68,7 @@ against the mockup's proposed row.
 ## Status
 
 Built 2026-09-24; JUnit, GameTests and the booth green (see
-[release verification](../devtools/verification/release-1.0.0.md)). **Not released**: Rusty's go
-is the release, together with Magical Map 0.3.0 (which implements the protocol) as pack 1.62.0,
-where the Locator Bar's override jar leaves the pack.
+[release verification](../devtools/verification/release-1.0.0.md)). **Released 2026-09-24**
+(tag v1.0.0) on Rusty's "Release and deploy", together with Magical Map 0.3.0 (which
+implements the protocol), as pack 1.62.0, where the Locator Bar's override jar left the pack;
+deployed the same hour with nobody on, 20 TPS. Not yet seen by Rusty in play.

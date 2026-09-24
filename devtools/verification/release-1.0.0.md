@@ -2,8 +2,9 @@
 
 2026-09-24. Azimuth's first build, on Rusty's approval of the plan (D-0001, D-0002), then the
 same day the restyle of the bar (D-0003) after Rusty judged the first build's look a downgrade
-from the Locator Bar. Still 1.0.0: nothing had shipped. **Not yet released: Rusty's go is the
-release**, together with Magical Map 0.3.0 as pack 1.62.0.
+from the Locator Bar. Still 1.0.0: nothing had shipped. **Released 2026-09-24 as tag v1.0.0**
+on Rusty's "Release and deploy", together with Magical Map 0.3.0 as pack 1.62.0; the GitHub
+asset matches the jar below by sha1, and so does the copy in the server's `/data/mods`.
 
 Full `./gradlew clean build publishToMavenLocal` on the release tree, Xephyr `:7`, llvmpipe,
 muted, no shaders:
