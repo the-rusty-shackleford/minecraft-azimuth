@@ -32,8 +32,8 @@ import java.util.List;
 import java.util.function.Consumer;
 
 /** Hardware-client gate: the booth player stands on a stone pad facing south with a second player
- * to the south-east (a framed head), a third far to the south-west (a far dot) and a fourth
- * behind (a chevron), a booth provider's places around them (a bell ahead within range, a
+ * to the south-east (a framed head), a third far to the south-west (a head at the fade's floor)
+ * and a fourth behind (a chevron), a booth provider's places around them (a bell ahead within range, a
  * campfire at the edge of range fading in, a chest behind as a chevron at the bar's end, a
  * pickaxe out of range) and a lodestone compass in the inventory; then a boss bar, then the same
  * boss bar hidden by another mod, then dots instead of heads. Photographed each time. Screenshots need a human eye; this fixture never
@@ -62,7 +62,7 @@ public final class AzimuthBooth {
                     p.teleportTo(l, X, y, Z, 0, 0);
                     peer = Mocks.player(p.server, l, "Surveyor", X + 30, y, Z + 52, 180);
                     peer.setNoGravity(true);
-                    // 200 blocks off, past the fade's floor at 125: a far dot, right of centre.
+                    // 200 blocks off, past the fade's floor at 125: a head at the floor, right of centre.
                     rover = Mocks.player(p.server, l, "Rover", X - 120, y, Z + 160, 180);
                     rover.setNoGravity(true);
                     // 70 blocks behind (the Surveyor is 60 off): outside the view, a chevron at the bar's end.

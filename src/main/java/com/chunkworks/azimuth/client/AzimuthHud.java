@@ -28,8 +28,9 @@ import java.util.*;
  * under {@code textures/gui/sprites} (drawn by {@code devtools/art/sprites.py}).
  *
  * <p>The look: a 102 by 10 outlined bar with a notch at the viewer's heading; north, east, south
- * and west as coloured badges; a player within the fade as their head in a black frame, beyond it
- * as a small outlined dot; a place as its item over an outlined dot in the place's colour; and
+ * and west as coloured badges; every player as their head in a black frame at any distance,
+ * fading with distance to the floor and back to full as they come near (D-0005); a place as its
+ * item over an outlined dot in the place's colour; and
  * whatever lies outside the view as one chevron at the nearer end, in the colour of the nearest
  * marker hidden that way (a stack of one per marker hid each other and cluttered the end, in the
  * booth). Markers keep {@link #MARGIN} pixels clear at each end for the chevrons. The tinted
@@ -39,7 +40,7 @@ public final class AzimuthHud {
     static final int BAR_WIDTH = 102, BAR_HEIGHT = 10, HALF_WIDTH = 51, MARGIN = 6, MARKER = 8;
     private static final int TEXT = 0xFFE8E8E8, PLAYER = 0xF3DFA1;
     private static final ResourceLocation BAR = Azimuth.id("bar"), NOTCH = Azimuth.id("notch"), FRAME = Azimuth.id("frame"),
-            DOT = Azimuth.id("dot"), PLAYER_DOT = Azimuth.id("player_dot"), FAR = Azimuth.id("far"),
+            DOT = Azimuth.id("dot"), PLAYER_DOT = Azimuth.id("player_dot"),
             CHEVRON_LEFT = Azimuth.id("chevron_left"), CHEVRON_RIGHT = Azimuth.id("chevron_right");
     private static final float[] DIRECTION_YAWS = { 180f, -90f, 0f, 90f };
     private static final ResourceLocation[] BADGES = { Azimuth.id("badge_n"), Azimuth.id("badge_e"), Azimuth.id("badge_s"), Azimuth.id("badge_w") };
@@ -101,8 +102,8 @@ public final class AzimuthHud {
     }
 
     /** effects: the other players, the tracked entity's live position winning over the server's
-     * last word: a framed head fading by distance, a small dot once beyond the fade, a plain dot
-     * when heads are off, and a chevron at the end when outside the view. */
+     * last word: a framed head fading by distance at any distance, a plain dot when heads are
+     * off, and a chevron at the end when outside the view. */
     private static void drawPlayers(GuiGraphics g, Minecraft mc, Payloads.Players payload, BarLayout layout, double x, double z, float yaw, Edges edges) {
         var live = new HashMap<UUID, double[]>();
         for (var other : mc.level.players()) if (other != mc.player) live.put(other.getUUID(), new double[] { other.getX(), other.getZ() });
@@ -116,7 +117,6 @@ public final class AzimuthHud {
             if (place.clamped()) { edges.add(place, bearing.distance(), PLAYER, alpha); continue; }
             int centre = HALF_WIDTH + place.x();
             if (!AzimuthConfig.HEADS.get()) tinted(g, PLAYER_DOT, centre - 3, 2, 7, 7, PLAYER, alpha);
-            else if (Fade.far(bearing.distance(), payload.fadeToMin())) tinted(g, FAR, centre - 2, 3, 5, 5, PLAYER, alpha);
             else {
                 g.setColor(1, 1, 1, alpha);
                 g.blitSprite(FRAME, centre - 5, 0, 10, 10);

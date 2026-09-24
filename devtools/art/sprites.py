@@ -124,8 +124,8 @@ def frame() -> Image.Image:
 
 def disc(size: int) -> Image.Image:
     """An outlined disc: white inside, black rim, the rim's corners cut. From 7 px up the fill's
-    own corners are cut too, which rounds it; at 5 px that would leave a plus sign (the first
-    booth photo showed one), so the 3 by 3 fill stays whole."""
+    own corners are cut too, which rounds it; below that a cut fill is a plus sign (a 5 px far
+    dot once showed one), so a small fill stays whole."""
     fill = {(x, y) for x in range(1, size - 1) for y in range(1, size - 1)
             if size < 7 or not ((x in (1, size - 2)) and (y in (1, size - 2)))}
     return outlined(size, size, fill)
@@ -143,7 +143,7 @@ def write_all() -> dict[str, Image.Image]:
     SPRITES.mkdir(parents=True, exist_ok=True)
     sprites = {
         "bar": bar(), "notch": notch(), "frame": frame(), "dot": disc(10), "player_dot": disc(7),
-        "far": disc(5), "chevron_left": chevron(True), "chevron_right": chevron(False),
+        "chevron_left": chevron(True), "chevron_right": chevron(False),
     }
     for letter in BADGES:
         sprites["badge_" + letter] = badge(letter)
@@ -171,7 +171,7 @@ def preview(sprites: dict[str, Image.Image], out: Path) -> None:
         img.alpha_composite(s, (5 + x, 3 + y))
     put("notch", 50, 0)
     put("badge_n", 10, 2); put("badge_e", 30, 2); put("badge_s", 56, 2); put("badge_w", 84, 2)
-    put("dot", 66, 0, (229, 184, 91)); put("frame", 18, 0); put("far", 76, 3, (255, 255, 255)); put("player_dot", 40, 2, (255, 255, 255))
+    put("dot", 66, 0, (229, 184, 91)); put("frame", 18, 0); put("player_dot", 40, 2, (255, 255, 255))
     put("chevron_left", 1, 2, (229, 184, 91)); put("chevron_right", 95, 2, (134, 182, 138))
     img = img.resize((img.width * 6, img.height * 6), Image.NEAREST)
     img.save(out)

@@ -6,7 +6,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 /** Partitions, players: nearer than the start, at the start, between (monotone, the curve's
  * midpoint), at the floor's distance, beyond it, a step when start equals the floor's distance;
- * far: short of the floor's distance, at it, beyond it, a floor at zero; places: inside the full zone, at the band's start, inside the band, at the range, beyond it,
+ * places: inside the full zone, at the band's start, inside the band, at the range, beyond it,
  * no band; bad parameters. */
 final class FadeTest {
     @Test void playersEaseToAFloorAndStayThere() {
@@ -19,14 +19,6 @@ final class FadeTest {
         assertEquals(0.4f, Fade.player(125, 50, 125, 0.4f));
         assertEquals(0.4f, Fade.player(10_000, 50, 125, 0.4f));
         assertEquals(0.4f, Fade.player(51, 50, 50, 0.4f), "a step when the band is empty");
-    }
-    @Test void aPlayerIsFarFromTheFloorsDistanceOn() {
-        assertFalse(Fade.far(10, 125));
-        assertFalse(Fade.far(124.9, 125));
-        assertTrue(Fade.far(125, 125), "far exactly where the fade reaches its floor");
-        assertTrue(Fade.far(10_000, 125));
-        assertTrue(Fade.far(0, 0), "a floor at zero makes everyone far");
-        assertThrows(IllegalArgumentException.class, () -> Fade.far(1, -1));
     }
     @Test void placesFadeInAtTheEdgeOfRange() {
         assertEquals(1f, Fade.location(10, 256, 64));

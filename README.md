@@ -7,11 +7,11 @@ the **AzimuthLocation protocol**. Both sides: the server gathers, the client dra
 
 ## What the bar shows
 
-- **Other players in your dimension**, as their heads in a black frame (plain dots if you
-  prefer), placed on the bar by the direction they lie in from where you face. They fade from
-  full at 50 blocks to 40 % at 125; from there on they are a small outlined dot, and they never
-  vanish. Nobody crouching, in spectator, invisible, or wearing a carved pumpkin or a skull is
-  shown to anyone. At most 16, nearest first.
+- **Other players in your dimension**, at any distance, as their heads in a black frame (plain
+  dots if you prefer), placed on the bar by the direction they lie in from where you face. They
+  fade from full at 50 blocks to 40 % at 125 and stay there, brightening again as you close in;
+  they never vanish. Nobody crouching, in spectator, invisible, or wearing a carved pumpkin or a
+  skull is shown to anyone. At most 16, nearest first.
 - **North, east, south and west**, as coloured badges where they lie: red N, yellow E, blue S,
   green W.
 - **Your coordinates**, written under the bar.
@@ -106,7 +106,7 @@ curves, the roster, the bar's position, the protocol's invariants). `./gradlew r
 runs the real-server GameTests (the players payload's rules and cap; providers asked, culled,
 capped and isolated; the compass and death providers over a real inventory).
 `./gradlew runPhotoBooth` opens a client on the booth world for a visual check of the bar with a
-second player near (a framed head), one far (a dot) and one behind (a chevron), a provider's
+second player near (a framed head), one far (a faded head) and one behind (a chevron), a provider's
 places, a lodestone compass, a boss bar, the same boss bar hidden by another mod, and the dots
 style.
 `./gradlew publishToMavenLocal` shares the jar with mods that compile against the protocol.
@@ -114,10 +114,12 @@ style.
 
 ## Status
 
-**1.0.1**: the bar sits below only the boss bars the game itself draws; 1.0.0 also moved down
+**1.0.2**: players are heads at any distance, fading with distance as the old bar did; the far
+dot of 1.0.0 read as the player being gone. Places unchanged. **1.0.1**: the bar sits below only
+the boss bars the game itself draws; 1.0.0 also moved down
 for bars other mods hide, such as the one Block Factory's Bosses attaches to every tracked
 warden, and sat low under empty sky. **1.0.0**: first release: players, directions, coordinates,
 compass and death points, the protocol, boss-bar avoidance, in the mod's own pixel art. Download
 from [GitHub Releases](https://github.com/the-rusty-shackleford/minecraft-azimuth/releases).
-Verified: 22 JUnit tests, 3 real-server GameTests and the photo booth; see
+Verified: 21 JUnit tests, 3 real-server GameTests and the photo booth; see
 [release verification](devtools/verification/).

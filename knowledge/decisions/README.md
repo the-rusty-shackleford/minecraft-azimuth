@@ -8,3 +8,4 @@ Rationales are append-only. Supersede with a new decision.
 | [D-0002](D-0002.md) | Accepted | The AzimuthLocation protocol: places come from providers; players are the bar's own; the fade rule travels with the payload |
 | [D-0003](D-0003.md) | Accepted | The look: our own outlined pixel art in the grammar players know; chevrons for what lies outside the view, far players as dots (amends D-0001) |
 | [D-0004](D-0004.md) | Accepted | The bar sits below the boss bars vanilla actually draws: listen last, ignore cancelled bars (a tracked warden's hidden bar pushed it down under nothing) |
+| [D-0005](D-0005.md) | Accepted | Players are heads at any distance, fading as the old bar did; the far dot is gone; places keep their range (amends D-0003) |

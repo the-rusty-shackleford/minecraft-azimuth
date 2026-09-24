@@ -1,7 +1,13 @@
 # Azimuth
 
-Version 1.0.1, built 2026-09-24. Minecraft 1.21.1, NeoForge 21.1.248, Java 21, both sides.
+Version 1.0.2, built 2026-09-24. Minecraft 1.21.1, NeoForge 21.1.248, Java 21, both sides.
 Public at github.com/the-rusty-shackleford/minecraft-azimuth.
+
+1.0.2 (the same evening): Rusty, in play: "The bar should still show players at any distance,
+and fade in as you get closer like the old bar (villages and other points of interest should
+not follow this, they should stay the same)." The far dot of D-0003 read as the player being
+gone. Players are framed heads at any distance again, fading by D-0001's curve to the floor
+and back; `Fade.far` and the far sprite are gone; places unchanged (D-0005).
 
 1.0.1 (the evening 1.0.0 went live): Rusty, in play: "The bar is way too low. I only want it
 lowered if a chunky is running, and one is not running right now." No boss bar was visible.
