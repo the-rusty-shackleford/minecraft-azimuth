@@ -11,7 +11,8 @@ the lowest priority, and Azimuth's listener at normal priority had already count
 now sits below only the bars vanilla actually draws: the listener runs last, receives cancelled
 events and ignores them (D-0004). The booth's stand-in for such a mod is registered at mod
 construction at LOWEST like the real one, and the new check failed on 1.0.0's registration
-before passing on the fix.
+before passing on the fix. Released as tag v1.0.1 and deployed as pack 1.62.1 the same evening
+on Rusty's "Yes do it, no warning this time"; not yet seen by Rusty next to that warden.
 
 Rusty on 2026-09-24, after asking for atlas icons on the pack's Locator Bar and hearing what that
 mod is inside: "create our own version of the locator bar (call it Azimuth) that clones the same

@@ -29,6 +29,8 @@ muted, no shaders:
   reproducible across two builds; published as `com.chunkworks.azimuth:azimuth:1.0.1` in
   mavenLocal, sha1 identical. The api package is unchanged; Magical Map 0.3.0 keeps compiling
   against 1.0.0 and runs against either.
-- Not verified: the fix on Rusty's own client next to that warden (the pack release carries it);
+- Released as tag v1.0.1 (the asset matches by sha1) and deployed as pack 1.62.1 at 20:06 UTC,
+  the server's copy matching by sha1, the log noting "azimuth (version 1.0.0 -> 1.0.1)".
+- Not verified: the fix on Rusty's own client next to that warden;
   a mod that listens at LOWEST and registers after Azimuth's client setup would still be counted
   (none in the pack does).
