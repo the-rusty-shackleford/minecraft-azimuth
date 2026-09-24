@@ -27,7 +27,30 @@ own landmarks; the bar at the top, shifted below boss bars ("Chunky").
   providers), three GameTests, the booth (`AzimuthBooth`: a Surveyor peer, a booth provider's
   bell, camp, chest and out-of-range pickaxe, a real lodestone and its compass, a boss bar, dots).
 
+## The look (restyled before the first release, D-0003)
+
+Rusty judged the first build's bar "plain and shitty, a visual downgrade" from the Locator Bar
+it replaces, and approved a side-by-side mockup: an outlined rounded dark bar with a top
+highlight and a notch at the heading, coloured N/E/S/W badges with white letters (red, yellow,
+blue, green, as players know them), heads in a 1 px black frame, an outlined coloured dot under
+each item sprite, chevrons at the ends for what lies outside the view, small outlined dots for
+far players. Every sprite is ours, drawn by `devtools/art/sprites.py` into
+`assets/azimuth/textures/gui/sprites/` and stitched into the game's GUI atlas
+(`GuiGraphics.blitSprite`); the tinted shapes are white with a black outline so one sprite
+serves every colour. Markers are drawn farthest first, so where they overlap the nearest is on
+top (Magical Map's booth showed a village underfoot hidden under a boat 92 blocks off). Still
+1.0.0: nothing had shipped. `devtools/verification/1.0.0/` holds the booth photos judged at 4x
+against the mockup's proposed row.
+
 ## Gotchas met
+
+- HUD layers must bracket themselves in `RenderSystem.enableBlend()` / `disableBlend()` as every
+  vanilla layer does: the boss overlay before us turns blending off at its end, and
+  `PlayerFaceRenderer.draw` turns it off again after the hat layer. Without both, every sprite
+  after a head drew at full strength whatever its alpha. Found by measuring the booth photo's
+  pixels against the computed fade (the far dot read pure cream), not by eye.
+- A 5 px outlined disc with its fill corners cut is a plus sign; the fill's corners are cut only
+  from 7 px up.
 
 - Gradle's `new File("run/...")` inside a task action resolves against the daemon's working
   directory, which is whichever repo started the daemon; resolve with `file()` at configuration

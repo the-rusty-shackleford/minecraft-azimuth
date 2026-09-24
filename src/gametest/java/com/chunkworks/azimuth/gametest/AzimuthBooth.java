@@ -3,6 +3,7 @@ package com.chunkworks.azimuth.gametest;
 
 import com.chunkworks.azimuth.AzimuthConfig;
 import com.chunkworks.azimuth.Bearings;
+import com.chunkworks.azimuth.Payloads;
 import com.chunkworks.azimuth.api.AzimuthLocation;
 import com.chunkworks.azimuth.api.AzimuthProviders;
 import com.chunkworks.azimuth.client.AzimuthHud;
@@ -31,16 +32,18 @@ import java.util.List;
 import java.util.function.Consumer;
 
 /** Hardware-client gate: the booth player stands on a stone pad facing south with a second player
- * to the south-east, a booth provider's places around them (a bell ahead within range, a
- * campfire at the edge of range fading in, a chest behind pinned to the bar's end, a pickaxe out
- * of range) and a lodestone compass in the inventory; then a boss bar, then dots instead of
- * heads. Photographed each time. Screenshots need a human eye; this fixture never ships. */
+ * to the south-east (a framed head), a third far to the south-west (a far dot) and a fourth
+ * behind (a chevron), a booth provider's places around them (a bell ahead within range, a
+ * campfire at the edge of range fading in, a chest behind as a chevron at the bar's end, a
+ * pickaxe out of range) and a lodestone compass in the inventory; then a boss bar, then dots
+ * instead of heads. Photographed each time. Screenshots need a human eye; this fixture never
+ * ships. */
 @EventBusSubscriber(modid = "azimuth_gametest", value = Dist.CLIENT)
 public final class AzimuthBooth {
     private static final Logger LOG = LoggerFactory.getLogger("Azimuth booth");
     private static final double X = 0.5, Z = 0.5;
     private static int tick;
-    private static ServerPlayer peer;
+    private static ServerPlayer peer, rover, tracker;
     @SubscribeEvent public static void tick(ClientTickEvent.Post event) {
         if (!Boolean.getBoolean("azimuth.booth")) return;
         var mc = Minecraft.getInstance();
@@ -59,9 +62,16 @@ public final class AzimuthBooth {
                     p.teleportTo(l, X, y, Z, 0, 0);
                     peer = Mocks.player(p.server, l, "Surveyor", X + 30, y, Z + 52, 180);
                     peer.setNoGravity(true);
+                    // 200 blocks off, past the fade's floor at 125: a far dot, right of centre.
+                    rover = Mocks.player(p.server, l, "Rover", X - 120, y, Z + 160, 180);
+                    rover.setNoGravity(true);
+                    // 70 blocks behind (the Surveyor is 60 off): outside the view, a chevron at the bar's end.
+                    tracker = Mocks.player(p.server, l, "Tracker", X, y, Z - 70, 0);
+                    tracker.setNoGravity(true);
                     AzimuthProviders.register(Mocks.provider("azimuth_gametest:booth", v -> List.of(
                             place(v, "bell", "Plains Village", 70, 70, "minecraft:bell", 0xe5b85b),
-                            place(v, "camp", "Your C.A.M.P.", 0, 240, "minecraft:campfire", 0x86b68a),
+                            // Off centre by 40, so the S badge and the notch dead ahead show.
+                            place(v, "camp", "Your C.A.M.P.", 40, 236, "minecraft:campfire", 0x86b68a),
                             place(v, "chest", "Iron mine", 0, -100, "minecraft:chest", 0xc0a060),
                             place(v, "pick", "Too far", -300, 0, "minecraft:iron_pickaxe", 0xffffff))));
                     // A lodestone compass forgets a lodestone that is not there once the inventory
@@ -76,7 +86,8 @@ public final class AzimuthBooth {
                 });
                 case 90 -> {
                     var players = Bearings.players().orElseThrow(() -> new IllegalStateException("no players payload arrived"));
-                    check(players.entries().size() == 1 && players.entries().get(0).id().equals(peer.getUUID()), "the Surveyor is on the bar: " + players);
+                    var heads = players.entries().stream().map(Payloads.Players.Entry::id).toList();
+                    check(heads.equals(List.of(peer.getUUID(), tracker.getUUID(), rover.getUUID())), "the Surveyor, the Tracker and the Rover are on the bar, nearest first: " + players);
                     var places = Bearings.locations().orElseThrow(() -> new IllegalStateException("no places payload arrived"));
                     var ids = places.entries().stream().map(e -> e.provider() + "/" + e.id()).toList();
                     check(ids.contains("azimuth_gametest:booth/bell") && ids.contains("azimuth_gametest:booth/camp") && ids.contains("azimuth_gametest:booth/chest") && ids.contains("azimuth:compass/slot/3"),

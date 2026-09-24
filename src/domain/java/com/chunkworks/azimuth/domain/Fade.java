@@ -16,6 +16,13 @@ public final class Fade {
         double t = (distance - fadeStart) / (fadeToMin - fadeStart);
         return (float) (1 - (1 - minAlpha) * Math.pow(t, 1.65));
     }
+    /** requires: fadeToMin >= 0; effects: whether a player this far is past the fade, where the
+     * bar stops drawing their head and marks them as a far dot instead: at fadeToMin and beyond,
+     * the same distance from which {@link #player} answers the floor. */
+    public static boolean far(double distance, double fadeToMin) {
+        if (fadeToMin < 0) throw new IllegalArgumentException("fade");
+        return distance >= fadeToMin;
+    }
     /** requires: range > 0, 0 <= band <= range; effects: 0 beyond range, rising in a straight
      * line over the last {@code band} blocks to 1 at range - band and anywhere nearer. */
     public static float location(double distance, double range, double band) {

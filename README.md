@@ -7,23 +7,30 @@ the **AzimuthLocation protocol**. Both sides: the server gathers, the client dra
 
 ## What the bar shows
 
-- **Other players in your dimension**, as their heads (dots if you prefer), placed on the bar by
-  the direction they lie in from where you face. They fade from full at 50 blocks to 40 % at 125
-  and never vanish. Nobody crouching, in spectator, invisible, or wearing a carved pumpkin or a
-  skull is shown to anyone. At most 16, nearest first.
-- **North, east, south and west**, as letters where they lie.
+- **Other players in your dimension**, as their heads in a black frame (plain dots if you
+  prefer), placed on the bar by the direction they lie in from where you face. They fade from
+  full at 50 blocks to 40 % at 125; from there on they are a small outlined dot, and they never
+  vanish. Nobody crouching, in spectator, invisible, or wearing a carved pumpkin or a skull is
+  shown to anyone. At most 16, nearest first.
+- **North, east, south and west**, as coloured badges where they lie: red N, yellow E, blue S,
+  green W.
 - **Your coordinates**, written under the bar.
-- **Places**: a coloured dot under the item that stands for the place, shown within 256 blocks and
-  fading in over the last 64. Built in: every lodestone compass you carry points at its lodestone
-  (one colour per slot), and with a recovery compass in your pockets your last death in this
-  dimension. With Magical Map, while you carry an atlas: bought villages, your C.A.M.P. and your
-  own landmarks. At most 16, nearest first.
-- Whatever lies beyond the bar's view (90° across by default) sits pinned to the nearer end at half
-  strength, so nothing is lost behind you.
+- **Places**: the item that stands for the place over an outlined dot in the place's colour, shown
+  within 256 blocks and fading in over the last 64. Built in: every lodestone compass you carry
+  points at its lodestone (one colour per slot), and with a recovery compass in your pockets your
+  last death in this dimension. With Magical Map, while you carry an atlas: bought villages, your
+  C.A.M.P. and your own landmarks. At most 16, nearest first.
+- Whatever lies beyond the bar's view (90° across by default) shows as a chevron at that end of
+  the bar, in the colour of the nearest thing hidden that way, so nothing is lost behind you.
+- A notch at the centre marks your own heading.
 - When a boss bar is showing (a raid, the dragon, Chunky's pregeneration progress), the bar moves
   down below it and comes back up when it is gone.
 
 The bar is a HUD layer drawn after the boss overlay; nothing is drawn while the HUD is hidden (F1).
+Its pixel art is the mod's own, under `assets/azimuth/textures/gui/sprites/`, drawn by
+`devtools/art/sprites.py` (`uv run --no-project --with pillow python devtools/art/sprites.py`,
+`--preview <png>` for a 6x mock of every sprite in place); the dots and chevrons are white with a
+black outline and take a marker's colour when drawn.
 
 ## Config
 
@@ -48,7 +55,7 @@ the next cycle without a config of their own. Client, `config/azimuth-client.tom
 | `bar.view_angle` | 90 | Degrees of horizon across the bar |
 | `bar.offset_x`, `bar.offset_y` | 0, 0 | Sideways from the centre, down from the top |
 | `bar.show_directions`, `bar.show_coordinates` | true | |
-| `bar.heads` | true | Off draws dots |
+| `bar.heads` | true | Off draws a dot for every player instead of a head |
 | `bar.below_boss_bars` | true | |
 
 ## The AzimuthLocation protocol
@@ -94,14 +101,15 @@ curves, the roster, the bar's position, the protocol's invariants). `./gradlew r
 runs the real-server GameTests (the players payload's rules and cap; providers asked, culled,
 capped and isolated; the compass and death providers over a real inventory).
 `./gradlew runPhotoBooth` opens a client on the booth world for a visual check of the bar with a
-second player, a provider's places, a lodestone compass, a boss bar and the dots style.
+second player near (a framed head), one far (a dot) and one behind (a chevron), a provider's
+places, a lodestone compass, a boss bar and the dots style.
 `./gradlew publishToMavenLocal` shares the jar with mods that compile against the protocol.
 `./gradlew build` produces `build/libs/azimuth-<version>.jar`.
 
 ## Status
 
 **1.0.0**: first release: players, directions, coordinates, compass and death points, the
-protocol, boss-bar avoidance. Download from
+protocol, boss-bar avoidance, in the mod's own pixel art. Download from
 [GitHub Releases](https://github.com/the-rusty-shackleford/minecraft-azimuth/releases).
-Verified: 21 JUnit tests, 3 real-server GameTests and the photo booth; see
+Verified: 22 JUnit tests, 3 real-server GameTests and the photo booth; see
 [release verification](devtools/verification/).
