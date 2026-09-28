@@ -99,6 +99,11 @@ public final class AzimuthGameTests {
         }
         h.succeed();
     }
+    private static ItemStack compass(BlockPos lodestone) {
+        var compass = new ItemStack(Items.COMPASS);
+        compass.set(DataComponents.LODESTONE_TRACKER, new LodestoneTracker(Optional.of(GlobalPos.of(Level.OVERWORLD, lodestone)), true));
+        return compass;
+    }
     @GameTest(template = "arena", timeoutTicks = 200) public void compassAndDeathBearingsReadTheInventory(GameTestHelper h) {
         var player = at(h, "navigator", 0, 0);
         // A lodestone compass forgets a lodestone that is not there once the inventory ticks, and
@@ -127,6 +132,20 @@ public final class AzimuthGameTests {
             h.assertTrue(death.size() == 1 && death.get(0).x() == grave.getX() + 0.5 && death.get(0).icon().equals("minecraft:recovery_compass"), "the death point with a recovery compass: " + death);
             player.setLastDeathLocation(Optional.of(GlobalPos.of(Level.NETHER, grave)));
             h.assertTrue(new DeathBearing().bearings(viewer(player), 256).isEmpty(), "a death in another dimension is not shown");
+            // D-0006: in a carried bag they count the same. The bag is Backpacks+'s by registry id
+            // (loaded on the gametest server), filled through the container component it keeps its
+            // cells in, and carried in a main slot, not worn. On the same player, since the players
+            // test counts every player on the server. A compass in a bag does not tick, so it keeps
+            // its lodestone as set.
+            for (int slot : new int[] {3, 6}) player.getInventory().setItem(slot, ItemStack.EMPTY);
+            var bag = new ItemStack(net.minecraft.core.registries.BuiltInRegistries.ITEM.get(net.minecraft.resources.ResourceLocation.parse("backpacksplus:basic_backpack")));
+            bag.set(DataComponents.CONTAINER, net.minecraft.world.item.component.ItemContainerContents.fromItems(List.of(ItemStack.EMPTY, ItemStack.EMPTY, compass(here), new ItemStack(Items.RECOVERY_COMPASS))));
+            player.getInventory().setItem(20, bag);
+            var fromBag = new CompassBearings().bearings(viewer(player), 256);
+            h.assertTrue(fromBag.size() == 1 && fromBag.get(0).id().equals("backpacksplus:slot/20/2") && fromBag.get(0).x() == here.getX() + 0.5,
+                    "the bag's lodestone compass, named by the bag and cell: " + fromBag);
+            player.setLastDeathLocation(Optional.of(GlobalPos.of(Level.OVERWORLD, grave)));
+            h.assertTrue(new DeathBearing().bearings(viewer(player), 256).size() == 1, "the bag's recovery compass shows the death point");
             leave(player);
             h.succeed();
         });

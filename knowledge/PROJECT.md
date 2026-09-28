@@ -1,5 +1,10 @@
 # Azimuth
 
+Version 1.1.0, built 2026-09-28, **unreleased**: the compass and death providers read what the
+viewer carries through the Carried protocol, bags included (D-0006). 3 GameTests with Backpacks+
+0.6.0 on the gametest server, green; the booth not rerun (no client change). Ships with Carried
+and Backpacks+ 0.6.0 as one pack on Rusty's go.
+
 Version 1.0.2, built 2026-09-24. Minecraft 1.21.1, NeoForge 21.1.248, Java 21, both sides.
 Public at github.com/the-rusty-shackleford/minecraft-azimuth.
 
